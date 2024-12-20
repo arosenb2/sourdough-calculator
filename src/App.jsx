@@ -32,7 +32,16 @@ export default function App() {
 
           <Routes>
             <Route path="/" element={showSaved ? <SavedRecipes /> : <Calculator />} />
-            <Route path="/recipe" element={<PrintableRecipe recipe={recipe} />} />
+            <Route
+              path="/recipe"
+              element={
+                recipe ? (
+                  <PrintableRecipe recipe={recipe} />
+                ) : (
+                  <Navigate to="/" replace />
+                )
+              }
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

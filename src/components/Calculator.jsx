@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepIndicator from './StepIndicator';
 import FlourDistribution from './FlourDistribution';
@@ -50,6 +50,8 @@ const steps = [
 export default function Calculator() {
   const navigate = useNavigate();
   const setRecipe = useRecipeStore((state) => state.setRecipe);
+  const clearRecipe = useRecipeStore((state) => state.clearRecipe);
+  const recipe = useRecipeStore((state) => state.recipe);
   const [currentStep, setCurrentStep] = useState(0);
   const [recipeData, setRecipeData] = useState({
     totalWeight: '',
@@ -58,6 +60,16 @@ export default function Calculator() {
     salt: '',
   });
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    clearRecipe();
+  }, [clearRecipe]);
+
+  useEffect(() => {
+    if (recipe) {
+      navigate('/recipe');
+    }
+  }, [recipe, navigate]);
 
   const handleInputChange = (value) => {
     setError('');
@@ -81,7 +93,7 @@ export default function Calculator() {
         return;
       }
     }
-    
+
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
@@ -105,7 +117,7 @@ export default function Calculator() {
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
         <h2 className="text-2xl font-bold mb-2 dark:text-white">{currentStepData.title}</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-4">{currentStepData.description}</p>
-        
+
         <div className="mb-6">
           {currentStepData.component ? (
             <currentStepData.component
@@ -119,7 +131,7 @@ export default function Calculator() {
               </label>
               <input
                 type={currentStepData.input.type}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md
                          focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
                 placeholder={currentStepData.input.placeholder}
                 value={recipeData[currentStepData.id]}

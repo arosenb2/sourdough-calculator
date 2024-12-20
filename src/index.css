@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+    margin: 0;
+    padding: 0;
+    color: black !important;
+    background: white !important;
+    border-color: black !important;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+
+  .print-only {
+    visibility: visible;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+    color: black !important;
+  }
+
+  .print-only * {
+    visibility: visible;
+    color: black !important;
+    background: white !important;
+    border-color: black !important;
+  }
+
+  /* Remove shadows and borders when printing */
+  .shadow-lg,
+  .border,
+  .border-t,
+  .border-gray-200,
+  .dark\:border-gray-600 {
+    box-shadow: none !important;
+    border-color: black !important;
+  }
+
+  /* Ensure text is black */
+  .text-gray-600,
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900,
+  .dark\:text-gray-200,
+  .dark\:text-gray-300,
+  .dark\:text-gray-400,
+  .dark\:text-white {
+    color: black !important;
+  }
+}

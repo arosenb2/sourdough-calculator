@@ -11,3 +11,10 @@ export const getSavedRecipes = () => {
   const saved = localStorage.getItem(STORAGE_KEY);
   return saved ? JSON.parse(saved) : [];
 };
+
+export const deleteSavedRecipe = (recipeId) => {
+  const recipes = getSavedRecipes();
+  const updatedRecipes = recipes.filter(recipe => recipe.id !== recipeId);
+  localStorage.setItem('savedRecipes', JSON.stringify(updatedRecipes));
+  return updatedRecipes;
+};

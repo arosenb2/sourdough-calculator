@@ -5,6 +5,7 @@ import SavedRecipes from './components/SavedRecipes';
 import PrintableRecipe from './components/PrintableRecipe';
 import ThemeToggle from './components/ThemeToggle';
 import useRecipeStore from './stores/recipeStore';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 
 export default function App() {
   const [showSaved, setShowSaved] = useState(false);
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
+        <PWAInstallPrompt />
       </div>
     </Router>
   );

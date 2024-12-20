@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 export default function SaveRecipeDialog({ recipe, onSave, onCancel }) {
-  const [name, setName] = useState('');
   const defaultName = `${recipe.total}g ${recipe.hydration}% Hydration Sourdough`;
+  const [name, setName] = useState(defaultName);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -10,7 +10,6 @@ export default function SaveRecipeDialog({ recipe, onSave, onCancel }) {
         <h3 className="text-lg font-semibold mb-4">Save Recipe</h3>
         <input
           type="text"
-          placeholder={defaultName}
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full p-2 border rounded mb-4"
@@ -18,7 +17,7 @@ export default function SaveRecipeDialog({ recipe, onSave, onCancel }) {
         <div className="flex justify-end gap-2">
           <button onClick={onCancel} className="px-4 py-2">Cancel</button>
           <button
-            onClick={() => onSave(name || defaultName)}
+            onClick={() => onSave(name)}
             className="bg-blue-600 text-white px-4 py-2 rounded"
           >
             Save

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { deleteSavedRecipe } from '../utils/storage';
 
 const useRecipeStore = create((set, get) => ({
   recipe: null,
@@ -20,6 +21,16 @@ const useRecipeStore = create((set, get) => ({
   deleteRecipe: (recipeId) => {
     const updatedRecipes = deleteSavedRecipe(recipeId);
     set({ savedRecipes: updatedRecipes });
+  },
+  getSavedRecipes: () => get().savedRecipes,
+  updateRecipeName: (recipeId, newName) => {
+    const savedRecipes = [...get().savedRecipes];
+    const recipeIndex = savedRecipes.findIndex(r => r.id === recipeId);
+    if (recipeIndex !== -1) {
+      savedRecipes[recipeIndex] = { ...savedRecipes[recipeIndex], name: newName };
+      localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+      set({ savedRecipes });
+    }
   }
 }));
 

@@ -4,29 +4,24 @@ export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   useEffect(() => {
-    window.addEventListener('beforeinstallprompt', (e) => {
+    const handleBeforeInstallPrompt = (e) => {
+      console.log('Install prompt captured');
       e.preventDefault();
       setDeferredPrompt(e);
-    });
-  }, []);
+    };
 
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
-  };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
 
   if (!deferredPrompt) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
-      <p className="mb-2">Install Sourdough Calculator</p>
+    <div className="fixed bottom-4 right-4 z-50 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg">
+      <p className="mb-2 text-gray-900 dark:text-white">Install Sourdough Calculator</p>
       <button
-        onClick={handleInstall}
-        className="bg-indigo-600 text-white px-4 py-2 rounded"
+        onClick={() => deferredPrompt.prompt()}
+        className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
       >
         Install
       </button>

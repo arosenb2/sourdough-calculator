@@ -10,6 +10,7 @@ import PWAInstallPrompt from './components/PWAInstallPrompt';
 export default function App() {
   const [showSaved, setShowSaved] = useState(false);
   const recipe = useRecipeStore((state) => state.recipe);
+  const savedRecipes = useRecipeStore((state) => state.savedRecipes);
 
   return (
     <Router>
@@ -20,9 +21,6 @@ export default function App() {
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Sourdough Calculator
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-              Calculate your perfect sourdough recipe using baker's percentages
-            </p>
             <button
               onClick={() => setShowSaved(!showSaved)}
               className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
@@ -32,18 +30,15 @@ export default function App() {
           </div>
 
           <Routes>
-            <Route path="/" element={showSaved ? <SavedRecipes /> : <Calculator />} />
+            <Route path="/" element={
+              showSaved ? <SavedRecipes recipes={savedRecipes} /> : <Calculator />
+            } />
             <Route
               path="/recipe"
               element={
-                recipe ? (
-                  <PrintableRecipe recipe={recipe} />
-                ) : (
-                  <Navigate to="/" replace />
-                )
+                recipe ? <PrintableRecipe recipe={recipe} /> : <Navigate to="/" replace />
               }
             />
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
         <PWAInstallPrompt />

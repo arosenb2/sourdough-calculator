@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { createHtmlPlugin } from 'vite-plugin-html';
 
 export default defineConfig({
-  base: '/sourdough/',
+  base: '/sourdough-calculator/',
   plugins: [
     react(),
     VitePWA({

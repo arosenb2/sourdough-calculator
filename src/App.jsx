@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Calculator from './components/Calculator';
 import SavedRecipes from './components/SavedRecipes';
 import PrintableRecipe from './components/PrintableRecipe';
@@ -29,10 +29,11 @@ export default function App() {
               {showSaved ? 'Create New Recipe' : 'View Saved Recipes'}
             </button>
           </div>
-          
+
           <Routes>
             <Route path="/" element={showSaved ? <SavedRecipes /> : <Calculator />} />
-            <Route path="/recipe/new" element={<PrintableRecipe recipe={recipe} />} />
+            <Route path="/recipe" element={<PrintableRecipe recipe={recipe} />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </div>

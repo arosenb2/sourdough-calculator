@@ -20,7 +20,7 @@ export default function FlourPercentages({ flours, onUpdate }) {
             type="number"
             value={flour.percentage}
             onChange={(e) => updatePercentage(index, e.target.value)}
-            className="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md 
+            className="w-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md
                      dark:bg-gray-700 dark:text-white"
             min="0"
             max="100"

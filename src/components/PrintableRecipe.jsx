@@ -1,87 +1,84 @@
-import React, { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import SaveRecipeDialog from '../components/SaveRecipeDialog';
+import Toast from '../components/Toast';
+import RecipeActions from './recipe/RecipeActions';
+import RecipeDetails from './recipe/RecipeDetails';
 import useRecipeStore from '../stores/recipeStore';
-import SaveRecipeDialog from './SaveRecipeDialog';
-import { PlusIcon, PrinterIcon, BookmarkIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { calculateRecipeFromTotalWeight } from '../utils/calculations';
+import { formatPercentage } from '../utils/formatting';
+import { formatFloursForUrl } from '../utils/urlParams';
 
-export default function PrintableRecipe({ recipe }) {
+export default function PrintableRecipe({ hideActions }) {
   const navigate = useNavigate();
-  const saveRecipe = useRecipeStore(state => state.saveRecipe);
-  const [saved, setSaved] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const baseRecipe = useRecipeStore((state) => state.recipe);
 
-  const formatPercentage = (value) => Number(value).toFixed(1);
+  const recipe = React.useMemo(() => {
+    if (!baseRecipe || !baseRecipe.flours) return null;
+    return calculateRecipeFromTotalWeight(baseRecipe);
+  }, [baseRecipe]);
+
+  const saveRecipe = useRecipeStore(state => state.saveRecipe);
+  const [saved, setSaved] = React.useState(false);
+  const [showSaveDialog, setShowSaveDialog] = React.useState(false);
+  const [showToast, setShowToast] = React.useState(false);
 
   const defaultTitle = `${formatPercentage(recipe.hydration)}% Hydration Sourdough (${recipe.total}g)`;
   const hasCustomName = recipe.name && recipe.name !== defaultTitle;
-
   const title = recipe.name || defaultTitle;
 
-  const handleSaveClick = () => {
-    setShowSaveDialog(true);
+  const handleShare = async () => {
+    const params = new URLSearchParams({
+      h: recipe.hydration,
+      w: recipe.total,
+      s: recipe.saltPercentage,
+      f: formatFloursForUrl(recipe.flours)
+    });
+    const url = `${window.location.origin}${window.location.pathname}#/shared?${params.toString()}`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Sourdough Recipe',
+          text: title,
+          url: url
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setShowToast(true);
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
   };
 
-  const handleSaveConfirm = (name) => {
-    saveRecipe(recipe, name);
-    setSaved(true);
-    setShowSaveDialog(false);
+  const handleNewRecipe = () => {
+    navigate('/');
   };
 
   if (!recipe || !recipe.flours) {
-    return <Navigate to="/" replace />;
+    return null;
   }
-
-  const totalPercentage = Number(
-    recipe.flours.reduce((sum, flour) => sum + (Number(flour.percentage) || 0), 0) +
-    (Number(recipe.hydration) || 0) +
-    (Number(recipe.levain) / Number(recipe.flour) * 100 || 0) +
-    (Number(recipe.saltPercentage) || 0)
-  );
 
   return (
     <>
       <div className="print:p-8 print-only">
         <div className="max-w-2xl mx-auto">
-          <div className="print:hidden mb-4 flex justify-between items-center">
-            <button
-              onClick={() => navigate('/')}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-            >
-              <PlusIcon className="h-5 w-5" />
-              New Recipe
-            </button>
-            <div className="flex gap-2">
-              <button
-                onClick={handleSaveClick}
-                disabled={saved}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-              >
-                {saved ? (
-                  <>
-                    <CheckIcon className="h-5 w-5" />
-                    Saved!
-                  </>
-                ) : (
-                  <>
-                    <BookmarkIcon className="h-5 w-5" />
-                    Save Recipe
-                  </>
-                )}
-              </button>
-              <button
-                onClick={() => window.print()}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <PrinterIcon className="h-5 w-5" />
-                Print Recipe
-              </button>
-            </div>
-          </div>
+          {!hideActions && (
+            <RecipeActions
+              onNew={handleNewRecipe}
+              onShare={handleShare}
+              onSave={() => setShowSaveDialog(true)}
+              onPrint={() => window.print()}
+              saved={saved}
+            />
+          )}
 
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 print:shadow-none print-only">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 print:shadow-none print:text-black">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                {recipe.name || defaultTitle}
+                {title}
               </h1>
               {hasCustomName && (
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
@@ -90,66 +87,25 @@ export default function PrintableRecipe({ recipe }) {
               )}
             </div>
 
-            <div className="space-y-6">
-              <section>
-                <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Recipe Details</h2>
-                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="border-b border-gray-200 dark:border-gray-600 font-semibold text-gray-600 dark:text-gray-300">Component</div>
-                    <div className="border-b border-gray-200 dark:border-gray-600 font-semibold text-right text-gray-600 dark:text-gray-300">Weight</div>
-                    <div className="border-b border-gray-200 dark:border-gray-600 font-semibold text-right text-gray-600 dark:text-gray-300">Baker's %</div>
-
-                    {recipe.flours.map((flour, index) => (
-                      <React.Fragment key={index}>
-                        <div className="text-gray-800 dark:text-gray-200">{flour.type}</div>
-                        <div className="text-right text-gray-800 dark:text-gray-200">
-                          {Math.round(recipe.flour * flour.percentage / 100)}g
-                        </div>
-                        <div className="text-right text-gray-800 dark:text-gray-200">
-                          {formatPercentage(flour.percentage)}%
-                        </div>
-                      </React.Fragment>
-                    ))}
-
-                    <div className="text-gray-800 dark:text-gray-200">Water</div>
-                    <div className="text-right text-gray-800 dark:text-gray-200">{recipe.water}g</div>
-                    <div className="text-right text-gray-800 dark:text-gray-200">
-                      {formatPercentage(recipe.hydration)}%
-                    </div>
-
-                    <div className="text-gray-800 dark:text-gray-200">Levain</div>
-                    <div className="text-right text-gray-800 dark:text-gray-200">{recipe.levain}g</div>
-                    <div className="text-right text-gray-800 dark:text-gray-200">
-                      {formatPercentage(recipe.levain / recipe.flour * 100)}%
-                    </div>
-
-                    <div className="text-gray-800 dark:text-gray-200">Salt</div>
-                    <div className="text-right text-gray-800 dark:text-gray-200">{recipe.salt}g</div>
-                    <div className="text-right text-gray-800 dark:text-gray-200">
-                      {formatPercentage(recipe.saltPercentage)}%
-                    </div>
-
-                    <div className="font-semibold border-t border-gray-200 dark:border-gray-600 pt-2 text-gray-800 dark:text-white">
-                      Total
-                    </div>
-                    <div className="font-semibold border-t border-gray-200 dark:border-gray-600 pt-2 text-right text-gray-800 dark:text-white">
-                      {recipe.total}g
-                    </div>
-                    <div className="font-semibold border-t border-gray-200 dark:border-gray-600 pt-2 text-right text-gray-800 dark:text-white">
-                      {formatPercentage(totalPercentage)}%
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
+            <RecipeDetails recipe={recipe} />
           </div>
         </div>
       </div>
       {showSaveDialog && (
         <SaveRecipeDialog
           recipe={recipe}
-          onSave={handleSaveConfirm}
+          onSave={(name) => {
+            saveRecipe(recipe, name);
+            setSaved(true);
+            setShowSaveDialog(false);
+          }}
           onCancel={() => setShowSaveDialog(false)}
+        />
+      )}
+      {showToast && (
+        <Toast
+          message="Recipe link copied to clipboard!"
+          onClose={() => setShowToast(false)}
         />
       )}
     </>

@@ -4,7 +4,9 @@ import { deleteSavedRecipe } from '../utils/storage';
 const useRecipeStore = create((set, get) => ({
   recipe: null,
   savedRecipes: JSON.parse(localStorage.getItem('savedRecipes') || '[]'),
-  setRecipe: (recipe) => set({ recipe }),
+  setRecipe: (recipe) => {
+    set({ recipe });
+  },
   clearRecipe: () => set({ recipe: null }),
   saveRecipe: (recipe, name) => {
     const savedRecipes = [...get().savedRecipes];

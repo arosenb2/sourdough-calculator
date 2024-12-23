@@ -42,54 +42,42 @@ export default function SavedRecipes() {
       {recipes.map((recipe) => (
         <div key={recipe.id} className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
           <div className="flex justify-between items-start">
-            <div
-              onClick={() => setExpandedId(expandedId === recipe.id ? null : recipe.id)}
-              className="flex-1 cursor-pointer group"
-            >
-              <div className="flex items-center gap-2">
-                {editingId === recipe.id ? (
-                  <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="text"
-                      value={editName}
-                      onChange={(e) => setEditName(e.target.value)}
-                      className="p-1 border rounded"
-                      autoFocus
-                    />
-                    <button
-                      onClick={() => handleSave(recipe.id)}
-                      className="text-green-600 hover:text-green-700"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditingId(null)}
-                      className="text-gray-600 hover:text-gray-700"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-lg font-semibold dark:text-white">
-                      {recipe.name || `${recipe.total}g ${recipe.hydration}% Hydration Sourdough`}
-                    </h3>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEdit(recipe);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <PencilIcon className="h-4 w-4 text-gray-500 hover:text-gray-700" />
-                    </button>
-                    {expandedId === recipe.id ?
-                      <ChevronUpIcon className="h-5 w-5" /> :
-                      <ChevronDownIcon className="h-5 w-5" />
-                    }
-                  </div>
-                )}
-              </div>
+            <div className="flex-1">
+              {editingId === recipe.id ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    autoFocus
+                  />
+                  <button
+                    onClick={() => handleSave(recipe.id)}
+                    className="text-green-600 hover:text-green-700 dark:text-green-400"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="text-gray-600 hover:text-gray-700 dark:text-gray-400"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-semibold dark:text-white">
+                    {recipe.name || `${recipe.total}g ${recipe.hydration}% Hydration Sourdough`}
+                  </h3>
+                  <button
+                    onClick={() => handleEdit(recipe)}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <PencilIcon className="h-4 w-4 text-gray-500 hover:text-gray-700 dark:text-gray-400" />
+                  </button>
+                </div>
+              )}
               <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                 <p>Added {format(recipe.createdAt)}</p>
                 <p>
@@ -98,15 +86,28 @@ export default function SavedRecipes() {
               </div>
             </div>
             <button
-              onClick={() => handleDelete(recipe.id)}
-              className="p-1.5 text-red-600 hover:text-red-800 dark:text-red-400"
+              onClick={() => setExpandedId(expandedId === recipe.id ? null : recipe.id)}
+              className="p-1.5 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
             >
-              <TrashIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              {expandedId === recipe.id ? (
+                <ChevronUpIcon className="h-5 w-5" />
+              ) : (
+                <ChevronDownIcon className="h-5 w-5" />
+              )}
             </button>
           </div>
           {expandedId === recipe.id && (
-            <div className="mt-4 border-t pt-4">
-              <PrintableRecipe recipe={recipe} />
+            <div className="mt-4 border-t pt-4 dark:border-gray-700">
+              <div className="flex justify-end mb-4">
+                <button
+                  onClick={() => handleDelete(recipe.id)}
+                  className="text-red-600 hover:text-red-800 dark:text-red-400 flex items-center gap-1 text-sm"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                  Delete Recipe
+                </button>
+              </div>
+              <PrintableRecipe recipe={recipe} hideActions />
             </div>
           )}
         </div>

@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StepIndicator from './StepIndicator';
 import FlourDistribution from './FlourDistribution';
-import { calculateRecipeFromTotalWeight } from '../utils/calculations';
-import { validateSaltPercentage } from '../utils/validations';
+import { validateTotalWeight, validateHydration, validateFlours, validateSaltPercentage } from '../utils/validations';
 import { FLOUR_TYPES } from '../types/recipe';
 import useRecipeStore from '../stores/recipeStore';
 
@@ -17,12 +16,16 @@ const steps = [
       label: 'Total dough weight (grams)',
       placeholder: '800',
     },
+    validate: (data) => validateTotalWeight(data.totalWeight),
+    errorMessage: 'Please enter a valid weight between 1 and 10,000 grams'
   },
   {
     id: 'flours',
     title: 'Flour Distribution',
     description: 'How would you like to distribute your flour types?',
     component: FlourDistribution,
+    validate: (data) => validateFlours(data.flours),
+    errorMessage: 'Please ensure flour percentages total 100%'
   },
   {
     id: 'hydration',
@@ -33,6 +36,8 @@ const steps = [
       label: 'Hydration percentage',
       placeholder: '75',
     },
+    validate: (data) => validateHydration(data.hydration),
+    errorMessage: 'Please enter a valid hydration between 50% and 100%'
   },
   {
     id: 'salt',
@@ -43,7 +48,8 @@ const steps = [
       label: 'Salt percentage',
       placeholder: '2',
     },
-    validate: validateSaltPercentage,
+    validate: (data) => validateSaltPercentage(data.salt),
+    errorMessage: 'Please enter a valid salt percentage between 1.5% and 3%'
   },
 ];
 
@@ -55,7 +61,7 @@ export default function Calculator() {
   const [currentStep, setCurrentStep] = useState(0);
   const [recipeData, setRecipeData] = useState({
     totalWeight: '',
-    flours: [{ type: FLOUR_TYPES.BREAD, percentage: 100 }],
+    flours: [{ type: 'BF', percentage: 100 }],
     hydration: '',
     salt: '',
   });
@@ -80,22 +86,28 @@ export default function Calculator() {
   };
 
   const handleCalculate = () => {
-    const calculatedRecipe = calculateRecipeFromTotalWeight(recipeData);
-    setRecipe({ ...calculatedRecipe, flours: recipeData.flours });
-    navigate('/recipe/new');
+    const calculatedRecipe = {
+      total: parseFloat(recipeData.totalWeight),
+      hydration: parseFloat(recipeData.hydration),
+      saltPercentage: parseFloat(recipeData.salt),
+      flours: recipeData.flours
+    };
+
+    setRecipe(calculatedRecipe);
+    // Remove navigation, let useEffect handle it
   };
 
   const nextStep = () => {
     const currentStepData = steps[currentStep];
-    if (currentStepData.validate) {
-      if (!currentStepData.validate(recipeData[currentStepData.id])) {
-        setError('Please enter a value between 1.5% and 3%');
-        return;
-      }
+
+    if (currentStepData.validate && !currentStepData.validate(recipeData)) {
+      setError(currentStepData.errorMessage);
+      return;
     }
 
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
+      setError('');
     } else {
       handleCalculate();
     }
@@ -107,8 +119,20 @@ export default function Calculator() {
     }
   };
 
+  const canProceed = () => {
+    const currentStepData = steps[currentStep];
+    if (!currentStepData.validate) return true;
+
+    return currentStepData.validate(recipeData);
+  };
+
   const isLastStep = currentStep === steps.length - 1;
   const currentStepData = steps[currentStep];
+
+  const handleComplete = (recipeData) => {
+    setRecipe(recipeData);
+    navigate('/recipe');
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-4">
@@ -142,24 +166,24 @@ export default function Calculator() {
           {error && <p className="mt-2 text-red-600 dark:text-red-400 text-sm">{error}</p>}
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between mt-6">
           <button
             onClick={previousStep}
-            disabled={currentStep === 0}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
               currentStep === 0
-                ? 'bg-gray-200 dark:bg-gray-700 cursor-not-allowed'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                ? 'text-gray-400 cursor-not-allowed'
+                : 'text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'
             }`}
+            disabled={currentStep === 0}
           >
             Previous
           </button>
           <button
             onClick={nextStep}
-            disabled={!recipeData[currentStepData.id]}
-            className={`px-4 py-2 rounded-md ${
-              !recipeData[currentStepData.id]
-                ? 'bg-gray-200 dark:bg-gray-700 cursor-not-allowed'
+            disabled={!canProceed()}
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
+              !canProceed()
+                ? 'bg-gray-300 cursor-not-allowed'
                 : 'bg-indigo-600 text-white hover:bg-indigo-700'
             }`}
           >

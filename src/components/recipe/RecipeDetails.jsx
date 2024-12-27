@@ -54,7 +54,7 @@ export default function RecipeDetails({ recipe }) {
               Total
             </div>
             <div className="font-semibold border-t border-gray-200 dark:border-gray-600 pt-2 text-right text-gray-800 dark:text-white">
-              {recipe.total}g
+              {formatWeight(recipe.total)}
             </div>
             <div className="font-semibold border-t border-gray-200 dark:border-gray-600 pt-2 text-right text-gray-800 dark:text-white">
               {formatPercentage(totalPercentage)}%

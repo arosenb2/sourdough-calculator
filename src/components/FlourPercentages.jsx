@@ -1,3 +1,5 @@
+import { FLOUR_TYPES } from '../types/recipe';
+
 export default function FlourPercentages({ flours, onUpdate }) {
   const updatePercentage = (index, value) => {
     const percentage = Math.min(100, Math.max(0, Number(value) || 0));
@@ -15,7 +17,7 @@ export default function FlourPercentages({ flours, onUpdate }) {
       </div>
       {flours.map((flour, index) => (
         <div key={index} className="flex items-center gap-4">
-          <span className="flex-1 text-gray-700 dark:text-gray-300">{flour.type}</span>
+          <span className="flex-1 text-gray-700 dark:text-gray-300">{FLOUR_TYPES[flour.type]}</span>
           <input
             type="number"
             value={flour.percentage}

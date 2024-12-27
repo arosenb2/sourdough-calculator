@@ -1,3 +1,7 @@
+export const formatWeight = (weight) => {
+  return `${weight.toLocaleString()}g`;
+};
+
 export function formatPercentage(value) {
   if (typeof value !== 'number') {
     value = parseFloat(value);

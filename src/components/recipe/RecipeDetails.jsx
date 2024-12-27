@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatPercentage } from '../../utils/formatting';
+import { formatPercentage, formatWeight } from '../../utils/formatting';
 import { FLOUR_TYPES } from '../../types/recipe';
 
 export default function RecipeDetails({ recipe }) {
@@ -24,7 +24,7 @@ export default function RecipeDetails({ recipe }) {
               <React.Fragment key={index}>
                 <div className="text-gray-800 dark:text-gray-200">{FLOUR_TYPES[flour.type]}</div>
                 <div className="text-right text-gray-800 dark:text-gray-200">
-                  {Math.round(recipe.flourWeight * flour.percentage / 100)}g
+                  {formatWeight(recipe.flourWeight * flour.percentage / 100)}
                 </div>
                 <div className="text-right text-gray-800 dark:text-gray-200">
                   {formatPercentage(flour.percentage)}%
@@ -33,19 +33,19 @@ export default function RecipeDetails({ recipe }) {
             ))}
 
             <div className="text-gray-800 dark:text-gray-200">Water</div>
-            <div className="text-right text-gray-800 dark:text-gray-200">{recipe.water}g</div>
+            <div className="text-right text-gray-800 dark:text-gray-200">{formatWeight(recipe.water)}</div>
             <div className="text-right text-gray-800 dark:text-gray-200">
               {formatPercentage(recipe.hydration)}%
             </div>
 
             <div className="text-gray-800 dark:text-gray-200">Levain</div>
-            <div className="text-right text-gray-800 dark:text-gray-200">{recipe.levain}g</div>
+            <div className="text-right text-gray-800 dark:text-gray-200">{formatWeight(recipe.levain)}</div>
             <div className="text-right text-gray-800 dark:text-gray-200">
               {formatPercentage(recipe.levain / recipe.flourWeight * 100)}%
             </div>
 
             <div className="text-gray-800 dark:text-gray-200">Salt</div>
-            <div className="text-right text-gray-800 dark:text-gray-200">{recipe.salt}g</div>
+            <div className="text-right text-gray-800 dark:text-gray-200">{formatWeight(recipe.salt)}</div>
             <div className="text-right text-gray-800 dark:text-gray-200">
               {formatPercentage(recipe.saltPercentage)}%
             </div>

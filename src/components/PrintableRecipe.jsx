@@ -7,7 +7,7 @@ import RecipeActions from './recipe/RecipeActions';
 import RecipeDetails from './recipe/RecipeDetails';
 import useRecipeStore from '../stores/recipeStore';
 import { calculateRecipeFromTotalWeight } from '../utils/calculations';
-import { formatPercentage } from '../utils/formatting';
+import { formatPercentage, formatWeight } from '../utils/formatting';
 import { formatFloursForUrl } from '../utils/urlParams';
 
 export default function PrintableRecipe({ hideActions }) {
@@ -24,7 +24,7 @@ export default function PrintableRecipe({ hideActions }) {
   const [showSaveDialog, setShowSaveDialog] = React.useState(false);
   const [showToast, setShowToast] = React.useState(false);
 
-  const defaultTitle = `${formatPercentage(recipe.hydration)}% Hydration Sourdough (${recipe.total}g)`;
+  const defaultTitle = `${formatPercentage(recipe.hydration)}% Hydration Sourdough (${formatWeight(recipe.total)})`;
   const hasCustomName = recipe.name && recipe.name !== defaultTitle;
   const title = recipe.name || defaultTitle;
 

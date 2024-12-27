@@ -79,8 +79,17 @@ export default function Calculator() {
   const handleInputChange = (value) => {
     setError('');
 
-    // Round weight inputs
-    const newValue = steps[currentStep].input.type === 'number' &&
+    // Handle flour array separately from number inputs
+    if (steps[currentStep].id === 'flours') {
+      setRecipeData({
+        ...recipeData,
+        flours: value
+      });
+      return;
+    }
+
+    // Round weight inputs using string comparison
+    const newValue = steps[currentStep].input?.type === 'number' &&
                     steps[currentStep].id === 'totalWeight' ?
                     Math.round(parseFloat(value)) || '' : value;
 

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import StepIndicator from './StepIndicator';
 import FlourDistribution from './FlourDistribution';
 import { validateTotalWeight, validateHydration, validateFlours, validateSaltPercentage } from '../utils/validations';
-import { FLOUR_TYPES } from '../types/recipe';
 import useRecipeStore from '../stores/recipeStore';
 
 const steps = [
@@ -79,9 +78,15 @@ export default function Calculator() {
 
   const handleInputChange = (value) => {
     setError('');
+
+    // Round weight inputs
+    const newValue = steps[currentStep].input.type === 'number' &&
+                    steps[currentStep].id === 'totalWeight' ?
+                    Math.round(parseFloat(value)) || '' : value;
+
     setRecipeData({
       ...recipeData,
-      [steps[currentStep].id]: value,
+      [steps[currentStep].id]: newValue,
     });
   };
 

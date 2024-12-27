@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { deleteSavedRecipe } from '../utils/storage';
 
-const useRecipeStore = create((set, get) => ({
+const useRecipeStore = create((set) => ({
   recipe: null,
-  savedRecipes: JSON.parse(localStorage.getItem('savedRecipes') || '[]'),
-  setRecipe: (recipe) => {
-    set({ recipe });
-  },
+  savedRecipes: [],
+  setRecipe: (recipe) => set({ recipe }),
+  clearSavedRecipes: () => set({ savedRecipes: [] }),
+  // ...existing code...
   clearRecipe: () => set({ recipe: null }),
   saveRecipe: (recipe, name) => {
     const savedRecipes = [...get().savedRecipes];

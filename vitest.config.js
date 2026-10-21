@@ -2,7 +2,8 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
+    // The tests are pure functions, so no DOM is needed
+    environment: 'node',
     globals: true,
   },
 });

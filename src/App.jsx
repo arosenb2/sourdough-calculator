@@ -8,6 +8,9 @@ import PrintableRecipe from './components/PrintableRecipe';
 import Layout from './components/Layout';
 import RequireRecipe from './components/RequireRecipe';
 import SharedRecipe from './components/SharedRecipe';
+import DoughTracker from './components/DoughTracker';
+import BakeDetail from './components/BakeDetail';
+import EditRecipe from './components/EditRecipe';
 
 function AppContent() {
   const location = useLocation();
@@ -52,7 +55,10 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Calculator />} />
           <Route path="/saved" element={<SavedRecipes />} />
+          <Route path="/saved/:id/edit" element={<EditRecipe />} />
           <Route path="/shared" element={<SharedRecipe />} />
+          <Route path="/tracker" element={<DoughTracker />} />
+          <Route path="/tracker/:id" element={<BakeDetail />} />
           <Route
             path="/recipe"
             element={<RequireRecipe><PrintableRecipe /></RequireRecipe>}

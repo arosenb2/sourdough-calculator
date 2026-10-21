@@ -1,26 +1,18 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+
+const linkClass = ({ isActive }) =>
+  `${isActive ? 'font-semibold underline' : ''} text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300`;
 
 export default function Navigation() {
-  const navigate = useNavigate();
   const location = useLocation();
 
+  if (location.pathname === '/shared') return null;
+
   return (
-    <div>
-      {location.pathname === '/saved' ? (
-        <button
-          onClick={() => navigate('/')}
-          className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
-        >
-          Create New Recipe
-        </button>
-      ) : location.pathname !== '/shared' && (
-        <button
-          onClick={() => navigate('/saved')}
-          className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
-        >
-          View Saved Recipes
-        </button>
-      )}
-    </div>
+    <nav className="flex justify-center gap-6">
+      <NavLink to="/" end className={linkClass}>New Recipe</NavLink>
+      <NavLink to="/saved" className={linkClass}>Saved Recipes</NavLink>
+      <NavLink to="/tracker" className={linkClass}>Dough Tracker</NavLink>
+    </nav>
   );
 }

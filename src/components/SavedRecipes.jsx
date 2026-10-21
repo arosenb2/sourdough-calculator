@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { format } from 'timeago.js';
 import PrintableRecipe from './PrintableRecipe';
 import useRecipeStore from '../stores/recipeStore';
-import { formatWeight } from '../utils/formatting';
-import { ChevronDownIcon, ChevronUpIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { defaultRecipeName } from '../utils/formatting';
+import { ChevronDownIcon, ChevronUpIcon, TrashIcon, PencilIcon, AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
 
 export default function SavedRecipes() {
-  const [expandedId, setExpandedId] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  // coming back from editing reopens the recipe that was just changed
+  const [expandedId, setExpandedId] = useState(location.state?.expandedId ?? null);
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
@@ -24,11 +28,13 @@ export default function SavedRecipes() {
 
   const handleEdit = (recipe) => {
     setEditingId(recipe.id);
-    setEditName(recipe.name || `${formatWeight(recipe.total)} ${recipe.hydration}% Hydration Sourdough`);
+    setEditName(recipe.name || defaultRecipeName(recipe));
   };
 
   const handleSave = (recipeId) => {
-    updateRecipeName(recipeId, editName);
+    const name = editName.trim();
+    if (!name) return;
+    updateRecipeName(recipeId, name);
     setEditingId(null);
   };
 
@@ -99,12 +105,20 @@ export default function SavedRecipes() {
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSave(recipe.id);
+                        if (e.key === 'Escape') setEditingId(null);
+                      }}
+                      onFocus={(e) => e.target.select()}
+                      aria-label="Recipe name"
+                      maxLength={100}
                       className="p-1 border rounded dark:bg-gray-700 dark:text-white dark:border-gray-600"
                       autoFocus
                     />
                     <button
                       onClick={() => handleSave(recipe.id)}
-                      className="text-green-600 hover:text-green-700 dark:text-green-400"
+                      disabled={!editName.trim()}
+                      className="text-green-600 hover:text-green-700 dark:text-green-400 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       Save
                     </button>
@@ -118,20 +132,22 @@ export default function SavedRecipes() {
                 ) : (
                   <div className="flex items-center gap-2">
                     <h3 className="text-lg font-semibold dark:text-white">
-                      {recipe.name || `${formatWeight(recipe.total)} ${recipe.hydration}% Hydration Sourdough`}
+                      {recipe.name || defaultRecipeName(recipe)}
                     </h3>
                     <button
                       onClick={() => handleEdit(recipe)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                      aria-label={`Rename ${recipe.name || defaultRecipeName(recipe)}`}
+                      title="Rename"
+                      className="p-1 rounded text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                     >
-                      <PencilIcon className="h-4 w-4 text-gray-500 hover:text-gray-700 dark:text-gray-400" />
+                      <PencilIcon className="h-4 w-4" />
                     </button>
                   </div>
                 )}
                 <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                   <p>Added {format(recipe.createdAt)}</p>
                   <p>
-                    {recipe.flours.map(f => f.type).join(', ')} · {recipe.hydration}% Hydration · {formatWeight(recipe.total)}
+                    {recipe.flours.map(f => f.type).join(', ')} · {recipe.hydration}% Hydration
                   </p>
                 </div>
               </div>
@@ -148,7 +164,14 @@ export default function SavedRecipes() {
             </div>
             {expandedId === recipe.id && (
               <div className="mt-4 border-t pt-4 dark:border-gray-700">
-                <div className="flex justify-end mb-4">
+                <div className="flex justify-between mb-4">
+                  <button
+                    onClick={() => navigate(`/saved/${encodeURIComponent(recipe.id)}/edit`)}
+                    className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 flex items-center gap-1 text-sm"
+                  >
+                    <AdjustmentsHorizontalIcon className="h-4 w-4" />
+                    Edit recipe
+                  </button>
                   <button
                     onClick={() => handleDelete(recipe.id)}
                     className="text-red-600 hover:text-red-800 dark:text-red-400 flex items-center gap-1 text-sm"
@@ -157,7 +180,7 @@ export default function SavedRecipes() {
                     Delete Recipe
                   </button>
                 </div>
-                <PrintableRecipe recipe={recipe} hideActions />
+                <PrintableRecipe recipe={{ ...recipe, total: undefined }} hideActions />
               </div>
             )}
           </div>

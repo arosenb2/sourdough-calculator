@@ -1,12 +1,22 @@
 import { create } from 'zustand';
-import { deleteSavedRecipe } from '../utils/storage';
+import { deleteSavedRecipe, getSavedRecipes } from '../utils/storage';
 
-const useRecipeStore = create((set) => ({
+const loadSavedRecipes = () => {
+  try {
+    return getSavedRecipes();
+  } catch {
+    return [];
+  }
+};
+
+const useRecipeStore = create((set, get) => ({
   recipe: null,
-  savedRecipes: [],
+  savedRecipes: loadSavedRecipes(),
   setRecipe: (recipe) => set({ recipe }),
-  clearSavedRecipes: () => set({ savedRecipes: [] }),
-  // ...existing code...
+  clearSavedRecipes: () => {
+    localStorage.setItem('savedRecipes', JSON.stringify([]));
+    set({ savedRecipes: [] });
+  },
   clearRecipe: () => set({ recipe: null }),
   saveRecipe: (recipe, name) => {
     const savedRecipes = [...get().savedRecipes];
@@ -23,6 +33,14 @@ const useRecipeStore = create((set) => ({
   deleteRecipe: (recipeId) => {
     const updatedRecipes = deleteSavedRecipe(recipeId);
     set({ savedRecipes: updatedRecipes });
+  },
+  // Replace a saved recipe's formula, keeping its id, name and date
+  updateRecipe: (recipeId, formula) => {
+    const savedRecipes = get().savedRecipes.map((r) =>
+      r.id === recipeId ? { ...formula, id: r.id, name: r.name, createdAt: r.createdAt } : r
+    );
+    localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+    set({ savedRecipes });
   },
   getSavedRecipes: () => get().savedRecipes,
   updateRecipeName: (recipeId, newName) => {

@@ -1,6 +1,6 @@
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
 
-export default function StepIndicator({ steps, currentStep }) {
+export default function StepIndicator({ steps, currentStep, onSelect }) {
   return (
     <nav aria-label="Progress" className="mb-8 relative">
       {/* Progress line */}
@@ -14,6 +14,15 @@ export default function StepIndicator({ steps, currentStep }) {
       <ol className="relative flex items-center justify-between w-full">
         {steps.map((step, index) => (
           <li key={step.id} className="flex items-center">
+            {onSelect ? (
+              <button
+                type="button"
+                onClick={() => onSelect(index)}
+                aria-label={`Go to ${step.title}`}
+                aria-current={index === currentStep ? 'step' : undefined}
+                title={step.title}
+                className="rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
             <div
               className={`relative flex h-8 w-8 items-center justify-center rounded-full 
                 transition-colors duration-200
@@ -33,6 +42,28 @@ export default function StepIndicator({ steps, currentStep }) {
                 aria-hidden="true"
               />
             </div>
+              </button>
+            ) : (
+            <div
+              className={`relative flex h-8 w-8 items-center justify-center rounded-full 
+                transition-colors duration-200
+                ${
+                  index <= currentStep
+                    ? 'bg-indigo-600'
+                    : 'bg-gray-200 dark:bg-gray-700'
+                }`}
+            >
+              <CheckCircleIcon
+                className={`h-5 w-5 transition-colors duration-200
+                  ${
+                    index <= currentStep
+                      ? 'text-white'
+                      : 'text-gray-400 dark:text-gray-600'
+                  }`}
+                aria-hidden="true"
+              />
+            </div>
+            )}
           </li>
         ))}
       </ol>

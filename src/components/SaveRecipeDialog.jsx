@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { defaultRecipeName } from '../utils/formatting';
 
 export default function SaveRecipeDialog({ recipe, onSave, onCancel }) {
-  const defaultName = `${recipe.total}g ${recipe.hydration}% Hydration Sourdough`;
+  const defaultName = defaultRecipeName(recipe);
   const [name, setName] = useState(defaultName);
 
   return (

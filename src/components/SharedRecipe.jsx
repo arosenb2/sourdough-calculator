@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
-import { parseFloursFromUrl } from '../utils/urlParams';
+import { parseFloursFromUrl, parseProcessFromUrl } from '../utils/urlParams';
 import useRecipeStore from '../stores/recipeStore';
 import PrintableRecipe from './PrintableRecipe';
 
@@ -12,6 +12,7 @@ export default function SharedRecipe() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const parsedRecipe = {
+      ...parseProcessFromUrl(params.get('p')),
       total: parseFloat(params.get('w')),
       hydration: parseFloat(params.get('h')),
       saltPercentage: parseFloat(params.get('s')),

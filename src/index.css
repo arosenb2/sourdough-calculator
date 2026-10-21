@@ -2,6 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Classic: Tailwind's own gray, indigo and green. Colour themes below redefine these. */
+  --white: 255 255 255;
+  --gray-50: 249 250 251;
+  --gray-100: 243 244 246;
+  --gray-200: 229 231 235;
+  --gray-300: 209 213 219;
+  --gray-400: 156 163 175;
+  --gray-500: 107 114 128;
+  --gray-600: 75 85 99;
+  --gray-700: 55 65 81;
+  --gray-800: 31 41 55;
+  --gray-900: 17 24 39;
+  --indigo-50: 238 242 255;
+  --indigo-100: 224 231 255;
+  --indigo-200: 199 210 254;
+  --indigo-300: 165 180 252;
+  --indigo-400: 129 140 248;
+  --indigo-500: 99 102 241;
+  --indigo-600: 79 70 229;
+  --indigo-700: 67 56 202;
+  --indigo-800: 55 48 163;
+  --indigo-900: 49 46 129;
+  --green-50: 240 253 244;
+  --green-100: 220 252 231;
+  --green-200: 187 247 208;
+  --green-300: 134 239 172;
+  --green-400: 74 222 128;
+  --green-500: 34 197 94;
+  --green-600: 22 163 74;
+  --green-700: 21 128 61;
+  --green-800: 22 101 52;
+  --green-900: 20 83 45;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --font-body: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-display: var(--font-body);
+}
+
 body {
   @apply bg-gray-50;
 }
@@ -59,5 +99,277 @@ body {
   .dark\:text-gray-400,
   .dark\:text-white {
     color: black !important;
+  }
+}
+
+/*
+ * Futuristic: an instrument-panel look for a fermentation lab. Cool ink and frosted panels,
+ * an aqua accent in place of indigo, and amber in place of green (save and confirm). The
+ * memorable bit is the glowing progress track and the faint grid horizon behind the header.
+ * It defines its own light and dark, so it works with the light/dark toggle.
+ */
+[data-theme='futuristic'] {
+  --white: 252 253 255;
+  --gray-50: 241 245 251;
+  --gray-100: 230 236 246;
+  --gray-200: 211 221 238;
+  --gray-300: 181 196 222;
+  --gray-400: 131 150 184;
+  --gray-500: 91 110 146;
+  --gray-600: 67 86 119;
+  --gray-700: 47 64 96;
+  --gray-800: 30 43 71;
+  --gray-900: 17 27 48;
+  --indigo-50: 236 254 255;
+  --indigo-100: 207 250 254;
+  --indigo-200: 165 243 252;
+  --indigo-300: 103 232 249;
+  --indigo-400: 34 211 238;
+  --indigo-500: 6 182 212;
+  --indigo-600: 14 116 144;
+  --indigo-700: 21 94 117;
+  --indigo-800: 22 78 99;
+  --indigo-900: 8 51 68;
+  --green-50: 255 251 235;
+  --green-100: 254 243 199;
+  --green-200: 253 230 138;
+  --green-300: 252 211 77;
+  --green-400: 251 191 36;
+  --green-500: 245 158 11;
+  --green-600: 180 83 9;
+  --green-700: 146 64 14;
+  --green-800: 120 53 15;
+  --green-900: 69 26 3;
+  --radius-md: 0.4rem;
+  --radius-lg: 0.9rem;
+  --radius-xl: 1.1rem;
+  --font-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Unbounded', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme='futuristic'].dark {
+  --white: 255 255 255;
+  --gray-50: 241 246 253;
+  --gray-100: 226 235 249;
+  --gray-200: 205 219 242;
+  --gray-300: 168 187 220;
+  --gray-400: 126 148 189;
+  --gray-500: 86 107 148;
+  --gray-600: 44 62 96;
+  --gray-700: 24 37 63;
+  --gray-800: 13 21 38;
+  --gray-900: 6 10 19;
+}
+
+@media screen {
+  [data-theme='futuristic'] body {
+    font-variant-numeric: tabular-nums;
+  }
+  [data-theme='futuristic'].dark body {
+    background-color: rgb(var(--gray-900));
+  }
+
+  [data-theme='futuristic'] :is(h1, h2, h3) {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  [data-theme='futuristic'] h1 { font-size: clamp(1.5rem, 4.5vw, 2.25rem); line-height: 1.15; }
+  [data-theme='futuristic'] h2 { font-size: 1.15rem; line-height: 1.3; }
+  [data-theme='futuristic'] h3 { font-size: 1rem; line-height: 1.35; }
+
+  /* Page: a faint aqua horizon glow, with a grid that fades out below the header */
+  [data-theme='futuristic'] .app-shell {
+    position: relative;
+    isolation: isolate;
+    background-color: rgb(var(--gray-50));
+    background-image: radial-gradient(60rem 26rem at 50% -9rem, rgb(var(--indigo-400) / 0.2), transparent 70%);
+  }
+  [data-theme='futuristic'].dark .app-shell {
+    background-color: rgb(var(--gray-900));
+    background-image: radial-gradient(60rem 28rem at 50% -9rem, rgb(var(--indigo-400) / 0.22), transparent 70%);
+  }
+  [data-theme='futuristic'] .app-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 34rem;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(var(--gray-500) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--gray-500) / 0.1) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  }
+
+  /* Panels: a hairline edge and a cool glow instead of a grey drop shadow */
+  [data-theme='futuristic'] :is(.shadow, .shadow-lg) {
+    box-shadow: 0 0 0 1px rgb(var(--gray-300) / 0.9), 0 22px 44px -26px rgb(var(--indigo-600) / 0.5);
+  }
+  [data-theme='futuristic'].dark :is(.shadow, .shadow-lg) {
+    box-shadow: 0 0 0 1px rgb(var(--gray-600) / 0.9), 0 0 40px -16px rgb(var(--indigo-400) / 0.5);
+  }
+
+  /* The progress track reads like a live instrument line */
+  [data-theme='futuristic'] nav[aria-label='Progress'] .bg-indigo-600 {
+    box-shadow: 0 0 14px rgb(var(--indigo-400) / 0.75);
+  }
+
+  /* Primary and save buttons light up on hover */
+  [data-theme='futuristic'] button.bg-indigo-600:not(:disabled):hover {
+    box-shadow: 0 0 22px -4px rgb(var(--indigo-400) / 0.8);
+  }
+  [data-theme='futuristic'] button.bg-green-600:not(:disabled):hover {
+    box-shadow: 0 0 22px -4px rgb(var(--green-400) / 0.8);
+  }
+}
+
+/*
+ * 80s: Memphis-style, the loud, flat, playful side of the decade. Cream and hot magenta with
+ * teal, black-outlined panels with hard offset shadows, and a Futura-style geometric face.
+ * Dark mode is an "80s night": deep purple with the same magenta and teal.
+ */
+[data-theme='eighties'] {
+  --white: 255 255 255;
+  --gray-50: 255 247 237;
+  --gray-100: 243 237 250;
+  --gray-200: 229 220 240;
+  --gray-300: 207 196 225;
+  --gray-400: 167 150 196;
+  --gray-500: 112 90 150;
+  --gray-600: 103 80 140;
+  --gray-700: 74 51 112;
+  --gray-800: 45 27 78;
+  --gray-900: 27 16 51;
+  --indigo-50: 253 242 248;
+  --indigo-100: 252 231 243;
+  --indigo-200: 251 207 232;
+  --indigo-300: 249 168 212;
+  --indigo-400: 244 114 182;
+  --indigo-500: 236 72 153;
+  --indigo-600: 202 28 126;
+  --indigo-700: 157 23 100;
+  --indigo-800: 120 22 82;
+  --indigo-900: 80 16 56;
+  --green-50: 240 253 250;
+  --green-100: 204 251 241;
+  --green-200: 153 246 228;
+  --green-300: 94 234 212;
+  --green-400: 45 212 191;
+  --green-500: 20 184 166;
+  --green-600: 13 128 124;
+  --green-700: 15 108 106;
+  --green-800: 17 88 88;
+  --green-900: 16 62 64;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.3rem;
+  --radius-xl: 1.25rem;
+  --font-body: 'Jost', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Jost', ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-theme='eighties'].dark {
+  /* near-black page, lighter panels, brighter text: plenty of separation between layers */
+  --gray-50: 253 250 255;
+  --gray-100: 247 238 255;
+  --gray-200: 238 224 255;
+  --gray-300: 222 202 252;
+  --gray-400: 194 170 238;
+  --gray-500: 152 126 206;
+  --gray-600: 112 74 170;
+  --gray-700: 70 42 124;
+  --gray-800: 44 24 84;
+  --gray-900: 12 6 26;
+}
+
+@media screen {
+  [data-theme='eighties'] :is(h1, h2, h3) {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  [data-theme='eighties'] h1 {
+    font-size: clamp(1.9rem, 6vw, 2.9rem);
+    line-height: 1.1;
+    text-shadow: 2px 2px 0 rgb(var(--green-400));
+  }
+  /* the stacked two-tone shadow is the site title's whole trick; other titles keep a single one */
+  [data-theme='eighties'] .text-center > h1 {
+    text-shadow: 3px 3px 0 rgb(var(--green-400)), 6px 6px 0 rgb(var(--indigo-400));
+  }
+  /* in dark mode the shadows go deeper so the light letters stay the brightest thing */
+  [data-theme='eighties'].dark h1 {
+    text-shadow: 2px 2px 0 rgb(var(--green-600));
+  }
+  [data-theme='eighties'].dark .text-center > h1 {
+    text-shadow: 3px 3px 0 rgb(var(--green-600)), 6px 6px 0 rgb(var(--indigo-700));
+  }
+  [data-theme='eighties'] h2 { font-size: 1.35rem; line-height: 1.25; }
+  [data-theme='eighties'] h3 { font-size: 1.1rem; line-height: 1.3; }
+
+  /* Page: plain cream, or plain deep purple in dark */
+  [data-theme='eighties'] .app-shell {
+    background-color: rgb(var(--gray-50));
+  }
+  [data-theme='eighties'].dark .app-shell {
+    background-color: rgb(var(--gray-900));
+  }
+  [data-theme='eighties'].dark body {
+    background-color: rgb(var(--gray-900));
+  }
+
+  /* Panels: a thick outline and a hard offset shadow, no blur */
+  [data-theme='eighties'] :is(.shadow, .shadow-lg) {
+    border: 2px solid rgb(var(--gray-900));
+    box-shadow: 6px 6px 0 rgb(var(--green-400));
+  }
+  [data-theme='eighties'].dark :is(.shadow, .shadow-lg) {
+    border-color: rgb(var(--gray-300));
+    box-shadow: 6px 6px 0 rgb(var(--indigo-500));
+  }
+
+  /* Inputs get the same outline */
+  [data-theme='eighties'] :is(input, select, textarea):not([type='checkbox']):not([type='radio']) {
+    border: 2px solid rgb(var(--gray-900));
+  }
+  [data-theme='eighties'].dark :is(input, select, textarea):not([type='checkbox']):not([type='radio']) {
+    border-color: rgb(var(--gray-400));
+  }
+
+  /* Buttons: outlined and chunky; they lift on hover and press flat */
+  [data-theme='eighties'] :is(button.bg-indigo-600, button.bg-green-600) {
+    border: 2px solid rgb(var(--gray-900));
+    box-shadow: 3px 3px 0 rgb(var(--gray-900));
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+  [data-theme='eighties'].dark :is(button.bg-indigo-600, button.bg-green-600) {
+    border-color: rgb(var(--gray-50));
+    box-shadow: 3px 3px 0 rgb(var(--gray-50));
+  }
+  [data-theme='eighties'] :is(button.bg-indigo-600, button.bg-green-600):not(:disabled):hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 rgb(var(--gray-900));
+  }
+  [data-theme='eighties'].dark :is(button.bg-indigo-600, button.bg-green-600):not(:disabled):hover {
+    box-shadow: 5px 5px 0 rgb(var(--gray-50));
+  }
+  [data-theme='eighties'] :is(button.bg-indigo-600, button.bg-green-600):not(:disabled):active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 rgb(var(--gray-900));
+  }
+
+  /* The progress track: a thick bar with outlined dots */
+  [data-theme='eighties'] nav[aria-label='Progress'] > div {
+    height: 5px;
+  }
+  [data-theme='eighties'] nav[aria-label='Progress'] li > div,
+  [data-theme='eighties'] nav[aria-label='Progress'] li > button > div {
+    border: 2px solid rgb(var(--gray-900));
+  }
+  [data-theme='eighties'].dark nav[aria-label='Progress'] li > div,
+  [data-theme='eighties'].dark nav[aria-label='Progress'] li > button > div {
+    border-color: rgb(var(--gray-300));
   }
 }

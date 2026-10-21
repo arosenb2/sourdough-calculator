@@ -9,6 +9,22 @@
     <meta name="theme-color" content="#4f46e5">
     <title>Sourdough Calculator</title>
 
+    <!-- Fonts for the Futuristic and 80s colour themes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Jost:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+      // Apply the saved colour theme and light/dark choice before first paint so neither flashes
+      try {
+        var root = document.documentElement;
+        var t = localStorage.getItem('colorTheme');
+        if (t === 'futuristic' || t === 'eighties') root.dataset.theme = t;
+        var mode = localStorage.getItem('theme');
+        var dark = mode ? mode === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) root.classList.add('dark');
+      } catch (e) {}
+    </script>
+
     <!-- OpenGraph tags -->
     <meta property="og:title" content="Sourdough Calculator" />
     <meta property="og:description" content="Calculate perfect sourdough recipes with custom hydration, salt percentage, and multiple flour types." />

@@ -4,7 +4,7 @@ import { buildMethod } from '../../utils/method';
 import { BAKE_VESSELS, BREAD_TYPES, FLOUR_TYPES, METHODS, MIXING_TYPES, SPICES } from '../../types/recipe';
 
 const cell = 'text-gray-800 dark:text-gray-200';
-const headCell = 'border-b border-gray-200 dark:border-gray-600 font-semibold text-gray-600 dark:text-gray-300';
+const headCell = 'whitespace-nowrap border-b border-gray-200 dark:border-gray-600 font-semibold text-gray-600 dark:text-gray-300';
 const totalCell = 'font-semibold border-t border-gray-200 dark:border-gray-600 pt-2 text-gray-800 dark:text-white';
 const heading = 'text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200';
 const panel = 'bg-gray-50 dark:bg-gray-700 rounded-lg p-4';
@@ -87,7 +87,7 @@ export default function RecipeDetails({ recipe }) {
       <section>
         <h2 className={heading}>Overall Formula</h2>
         <div className={panel}>
-          <div className="grid grid-cols-[minmax(0,1fr)_4.5rem_4.5rem] gap-x-3 gap-y-3">
+          <div className="grid grid-cols-[minmax(0,1fr)_4.75rem_5.5rem] gap-x-3 gap-y-3">
             <div className={headCell}>Component</div>
             <div className={`text-right ${headCell}`}>Weight</div>
             <div className={`text-right ${headCell}`}>Baker's %</div>
